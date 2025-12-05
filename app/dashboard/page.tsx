@@ -1,11 +1,23 @@
-import BackgroundChart from "./components/BackgroundChart";
-import TickerBar from "./components/TickerBar";
-import Sparkline from "./components/Sparkline";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import BackgroundChart from "../components/BackgroundChart";
+import TickerBar from "../components/TickerBar";
+import Sparkline from "../components/Sparkline";
+import { UserButton } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
-export default function Page() {
+
+
+export default async function DashboardPage() {
+  const { userId } = await auth();
+
+  if (!userId) {
+    redirect("/sign-in");
+  }
+
   return (
     <div className="fixed inset-0 overflow-hidden">
+      {/* ...rest of your existing JSX stays exactly the same... */}
+
       <main className="relative h-full bg-slate-950 text-slate-100">
         {/* Background glow */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.16),transparent_55%),radial-gradient(circle_at_bottom,_rgba(52,211,153,0.24),transparent_60%)]" />
@@ -19,18 +31,7 @@ export default function Page() {
             </div>
 
             <div className="flex items-center gap-3 text-[11px]">
-              <SignedOut>
-                <a
-                  href="/sign-in"
-                  className="rounded-full bg-emerald-500 px-3 py-1 font-semibold text-slate-950 shadow-[0_0_16px_rgba(45,212,191,0.6)]"
-                >
-                  Sign in
-                </a>
-              </SignedOut>
-
-              <SignedIn>
-                <UserButton afterSignOutUrl="/" />
-              </SignedIn>
+             <UserButton afterSignOutUrl="/sign-in" />
 
               <button className="rounded-full bg-gradient-to-r from-emerald-500 via-cyan-400 to-emerald-500 px-3 py-1 text-[11px] font-semibold text-slate-950 shadow-[0_0_16px_rgba(45,212,191,0.6)]">
                 Upgrade
@@ -50,9 +51,7 @@ export default function Page() {
               </span>
             </h1>
             <p className="max-w-xl text-sm text-slate-400 md:text-base">
-              Intuitive, fast, and data-rich. A unified dashboard for director
-              dealings, hedge-fund short interest, market momentum, and
-              smart-money activity across UK equities and index funds.
+              Intuitive, fast, and data-rich. A unified dashboard for director dealings, hedge-fund short interest, market momentum, and smart-money activity across UK equities and index funds.
             </p>
           </div>
 
@@ -111,11 +110,10 @@ export default function Page() {
                 {/* Left side: labels + legend */}
                 <div>
                   <div className="text-[11px] uppercase tracking-wide text-slate-400">
-                    Portfolio
+                     Portfolio
                   </div>
                   <div className="mt-1 text-[11px] text-slate-500">
-                    portfolio showing index funds, blue chips, and
-                    high-conviction trades..
+                    portfolio showing index funds, blue chips, and high-conviction trades..
                   </div>
                   <div className="mt-3 flex flex-wrap gap-3 text-[11px] text-slate-400">
                     <div className="flex items-center gap-1">
@@ -306,9 +304,7 @@ export default function Page() {
 
               {/* Bottom mini-rectangle */}
               <div className="mt-3 flex items-center justify-between rounded-xl bg-slate-900/60 px-3 py-2 text-[11px] text-slate-400">
-                <span>
-                  Live RNS / PDMR feed integrates automatically when enabled.
-                </span>
+                <span>Live RNS / PDMR feed integrates automatically when enabled.</span>
                 <span className="rounded-full bg-slate-800 px-2 py-1 text-[10px] text-slate-300">
                   RNS feed
                 </span>
