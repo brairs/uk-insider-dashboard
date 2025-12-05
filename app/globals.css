@@ -27,3 +27,28 @@ body {
   display: none !important;
 }
 
+/* ---- Ticker bar animation ---- */
+
+.ticker-track {
+  display: inline-flex;
+  gap: 2rem;
+  min-width: max-content;
+  animation: ticker-move 24s linear infinite; /* slightly faster than before */
+  will-change: transform;
+}
+
+@keyframes ticker-move {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Pause the scroll when hovering the strip */
+.ticker-container:hover .ticker-track {
+  animation-play-state: paused;
+}
+
+

@@ -1,11 +1,9 @@
-// layout.tsx
 import "./globals.css";
 import type { Metadata } from "next";
-import BackgroundChart from "./components/BackgroundChart";
 
 export const metadata: Metadata = {
-  title: "Market Dashboard",
-  description: "Track UK stocks, ETFs & insider activity",
+  title: "UK Market Dashboard",
+  description: "Track UK stocks, ETFs, director dealings and hedge-fund short interest.",
 };
 
 export default function RootLayout({
@@ -15,9 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-[#020617] text-white relative overflow-hidden">
-        {/* waves only */}
-        <BackgroundChart />
+      <body className="bg-slate-950 text-slate-50">
         {children}
       </body>
     </html>
