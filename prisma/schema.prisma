@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model DirectorDealing {
+  id        Int      @id @default(autoincrement())
+  company   String
+  ticker    String
+  director  String
+  role      String
+  type      String   // "Buy" | "Sell"
+  valueGBP  Int
+  price     Float
+  date      DateTime
+  source    String?
+  createdAt DateTime @default(now())
+}
+
+model ShortInterest {
+  id           Int                  @id @default(autoincrement())
+  company      String
+  ticker       String
+  shortPercent Float
+  lastUpdated  DateTime
+  createdAt    DateTime             @default(now())
+  funds        ShortInterestFund[]
+}
+
+// Separate table for the hedge funds shorting each position
+model ShortInterestFund {
+  id              Int           @id @default(autoincrement())
+  fundName        String
+  shortInterestId Int
+  shortInterest   ShortInterest @relation(fields: [shortInterestId], references: [id])
+}
