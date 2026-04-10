@@ -1,53 +1,66 @@
-import { headers } from "next/headers";
+// app/lib/serverApi.ts
+export type DirectorDealing = {
+  id?: number;
+  company: string;
+  ticker: string;
+  director: string;
+  role: string;
+  type: string;
+  valueGBP: number;
+  price: number;
+  date: string;
+  source?: string;
+};
 
-/**
- * Build an absolute base URL that works:
- * - locally (localhost:3000)
- * - on Vercel
- * - in server components
- */
-export function getBaseUrl() {
-  const h = headers() as unknown as Headers;
-  const host = h.get("host") ?? "localhost:3000";
-  const proto = h.get("x-forwarded-proto") ?? "http";
-  return `${proto}://${host}`;
+export type ShortInterestRow = {
+  company: string;
+  ticker: string;
+  shortPercent: number;
+  funds: string[];
+  lastUpdated: string;
+};
+
+function getBaseUrl() {
+  // 1) If you set NEXT_PUBLIC_APP_URL in .env.local, that wins
+  const explicit = process.env.NEXT_PUBLIC_APP_URL;
+  if (explicit) return explicit.replace(/\/$/, "");
+
+  // 2) Vercel provides VERCEL_URL (no protocol)
+  const vercel = process.env.VERCEL_URL;
+  if (vercel) return `https://${vercel}`;
+
+  // 3) Local dev fallback
+  return "http://localhost:3000";
 }
 
-/**
- * Safely parse JSON without throwing
- */
 async function safeJson<T>(res: Response): Promise<T | null> {
   try {
-    return (await res.json()) as T;
+    return await res.json() as T;
   } catch {
     return null;
   }
 }
 
-/**
- * Fetch director dealings from your API route
- */
-export async function fetchDirectorDealings() {
-  const res = await fetch(`${getBaseUrl()}/api/director-dealings`, {
-    cache: "no-store",
-  });
+// /api/director-dealings returns: { deals: [...] }
+export async function fetchDirectorDealings(): Promise<DirectorDealing[]> {
+  const url = `${getBaseUrl()}/api/director-dealings`;
 
+  const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) return [];
 
   const data = await safeJson<any>(res);
-  return Array.isArray(data) ? data : data?.data ?? [];
+  const deals = data?.deals;
+
+  return Array.isArray(deals) ? (deals as DirectorDealing[]) : [];
 }
 
-/**
- * Fetch short interest from your API route
- */
-export async function fetchShortInterest() {
-  const res = await fetch(`${getBaseUrl()}/api/short-interest`, {
-    cache: "no-store",
-  });
+// /api/short-interest returns: [ ... ]
+export async function fetchShortInterest(): Promise<ShortInterestRow[]> {
+  const url = `${getBaseUrl()}/api/short-interest`;
 
+  const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) return [];
 
   const data = await safeJson<any>(res);
-  return Array.isArray(data) ? data : data?.data ?? [];
+  return Array.isArray(data) ? (data as ShortInterestRow[]) : [];
 }
