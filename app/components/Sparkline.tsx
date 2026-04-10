@@ -3,11 +3,11 @@
 interface SparklineProps {
   values: number[];   // 0–1 range
   stroke: string;
+  width?: number;
+  height?: number;
 }
 
-export default function Sparkline({ values, stroke }: SparklineProps) {
-  const width = 80;
-  const height = 26;
+export default function Sparkline({ values, stroke, width = 80, height = 26 }: SparklineProps) {
 
   // keep the line in a comfortable band (not too tall)
   const minY = height * 0.35;
