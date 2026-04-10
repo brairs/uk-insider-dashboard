@@ -1,6 +1,12 @@
 // app/components/TickerBar.tsx
 
-const TICKER_ITEMS = [
+type TickerItem = {
+  symbol: string;
+  value: string;
+  direction: "up" | "down";
+};
+
+const TICKER_ITEMS: TickerItem[] = [
   { symbol: "FTSE 100", value: "+0.81%", direction: "up" },
   { symbol: "FTSE 250", value: "+0.42%", direction: "up" },
   { symbol: "TSCO", value: "+1.24%", direction: "up" },
